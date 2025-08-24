@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 
 services:
     # image project
@@ -11,7 +11,13 @@ services:
         volumes:
             - ./:/var/www
         depends_on:
+            - db
             - redis
+        environment:
+            - DB_HOST=${DB_HOST}
+            - DB_DATABASE=${DB_DATABASE}
+            - DB_USERNAME=${DB_USERNAME}
+            - DB_PASSWORD=${DB_PASSWORD}
         networks:
             - laravel
 
@@ -20,7 +26,7 @@ services:
         image: nginx:alpine
         restart: unless-stopped
         ports:
-            - "8989:80"
+            - "8002:80"
         volumes:
             - ./:/var/www
             - ./docker/nginx/:/etc/nginx/conf.d/
@@ -29,36 +35,38 @@ services:
 
     # db mysql
     db:
-        image: mysql:5.7.22
+        image: mysql:8.0
         restart: unless-stopped
         environment:
-            MYSQL_DATABASE: ${DB_DATABASE:-laravel}
-            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
-            MYSQL_PASSWORD: ${DB_PASSWORD:-userpass}
-            MYSQL_USER: ${DB_USERNAME:-username}
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
         volumes:
-            - ./.docker/mysql/dbdata:/var/lib/mysql
+            - ./docker/mysql/dbdata:/var/lib/mysql
         ports:
-            - "3388:3306"
+            - "3307:3306"
         networks:
             - laravel
 
-    # queue
-    queue:
-        image: especializati/laravel9-app
+    # PHPMyAdmin
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
         restart: unless-stopped
-        command: "php artisan queue:work"
-        volumes:
-            - ./:/var/www
-        depends_on:
-            - redis
-            - app
+        ports:
+            - "8003:80"
+        environment:
+            PMA_HOST: db
+            PMA_PORT: 3306
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
         networks:
             - laravel
 
     # redis
     redis:
         image: redis:latest
+        restart: unless-stopped
+        ports:
+        - "6380:6379"
         networks:
             - laravel
 
