@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Contracts;
 
-interface PaginationInterface 
+interface PaginationInterface
 {
-     /**
+    /**
      * @return stdClass[]
      */
     public function items(): array;
