@@ -15,18 +15,20 @@ use Illuminate\Http\Response;
 class SupportController extends Controller
 {
     public function __construct(
-        protected SupportService $service
-    ) {}
-    
+        protected SupportService $service,
+    ) {
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        // $supports = Support::paginate();
         $supports = $this->service->paginate(
             page: $request->get('page', 1),
             totalPerPage: $request->get('per_page', 1),
-            filter: $request->get('filter')
+            filter: $request->filter,
         );
 
         return ApiAdapter::toJson($supports);
@@ -41,7 +43,9 @@ class SupportController extends Controller
             CreateSupportDTO::makeFromRequest($request)
         );
 
-        return new SupportResource($support);
+        return (new SupportResource($support))
+            ->response()
+            ->setStatusCode(Response::HTTP_CREATED);;
     }
 
     /**
