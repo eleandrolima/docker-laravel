@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Forúm')
+@section('title', 'Fórum')
 
 @section('header')
 @include('admin.supports.partials.header', compact('supports'))
@@ -12,5 +12,5 @@
 <x-pagination
     :paginator="$supports"
     :appends="$filters" />
-    
+
 @endsection
