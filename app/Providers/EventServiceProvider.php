@@ -22,7 +22,8 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         SupportReplied::class => [
-            SendMailWhenSupportReplied::class
+            SendMailWhenSupportReplied::class,
+            ChangeStatusSupport::class,
         ],
     ];
 

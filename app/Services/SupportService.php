@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\DTO\Supports\CreateSupportDTO;
 use App\DTO\Supports\UpdateSupportDTO;
+use App\Enums\SupportStatus;
 use App\Repositories\Contracts\PaginationInterface;
 use App\Repositories\Contracts\SupportRepositoryInterface;
 use stdClass;
@@ -11,25 +12,25 @@ use stdClass;
 class SupportService
 {
     public function __construct(
-        protected SupportRepositoryInterface $repository
-    ) {}
-
-    public function getAll(string $filter = null): array
-    {
-        return $this->repository->getAll($filter); 
+        protected SupportRepositoryInterface $repository,
+    ) {
     }
 
     public function paginate(
-        int $page = 1, 
-        int $totalPerPage = 15, 
+        int $page = 1,
+        int $totalPerPage = 15,
         string $filter = null
-    ): PaginationInterface
-    {
+    ): PaginationInterface {
         return $this->repository->paginate(
             page: $page,
             totalPerPage: $totalPerPage,
-            filter: $filter
-        ); 
+            filter: $filter,
+        );
+    }
+
+    public function getAll(string $filter = null): array
+    {
+        return $this->repository->getAll($filter);
     }
 
     public function findOne(string $id): stdClass|null
@@ -50,5 +51,10 @@ class SupportService
     public function delete(string $id): void
     {
         $this->repository->delete($id);
+    }
+
+    public function updateStatus(string $id, SupportStatus $status): void
+    {
+        $this->repository->updateStatus($id, $status);
     }
 }
