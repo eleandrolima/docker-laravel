@@ -24,7 +24,7 @@ class ReplySupport extends Model
 
     protected $with = ['user'];
 
-    protected static function booted(): void
+    protected static function booted(): void 
     {
         static::addGlobalScope('order', function (Builder $builder) {
             $builder->latest();
